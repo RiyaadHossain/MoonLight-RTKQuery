@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../../components/ProductCard";
+import { useGetProductsQuery } from "../../features/api/apiSlice";
 import { brandToggle, toggle } from "../../features/filter/filterSlice";
 
 const Home = () => {
 
   const dispatch = useDispatch()
   const { stock, brands } = useSelector(state => state.filter)
-  
-  const [products, setProducts] = useState([])
+  const { isFetching, isError, data, error } = useGetProductsQuery()
+  const products = data?.data
 
-  useEffect(() => {
-    fetch('products.json').then(res => res.json()).then(data => setProducts(data))
-  }, [])
   const activeClass = "text-white  bg-indigo-500 border-white";
+
+  if(isFetching) return <p>Loading...</p>
+  if (isError) return <p>{error}</p>
 
   let content;
 
