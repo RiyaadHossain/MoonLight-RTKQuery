@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 
 const ProductList = () => {
 
-  const { isError, data, error } = useGetProductsQuery(null, { refetchOnMountOrArgChange: true })
+  const { isError, isFetching, data, error } = useGetProductsQuery()
   const products = data?.data
 
   const [removeProduct, { isError: isRemoveError, isLoading, isSuccess, error: removeError }] = useRemoveProductMutation()
@@ -16,6 +16,7 @@ const ProductList = () => {
     if (isRemoveError) toast.error(removeError, { id: "remove123" })
   }, [isLoading, isSuccess, isError, error, isRemoveError, removeError])
 
+  if (isFetching) return <p>Loading...</p>
   if (isError) return <p className="text-red-600">{error}</p>
 
   return (
