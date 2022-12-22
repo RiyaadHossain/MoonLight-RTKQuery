@@ -1,9 +1,12 @@
 import React from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-// import { toast } from "react-hot-toast";
+import { useAddProductMutation } from "../../features/api/apiSlice";
+import { toast } from "react-hot-toast";
 
 const AddProduct = () => {
   const { register, handleSubmit, reset } = useForm();
+  const [addProduct, { isError, isLoading, isSuccess, error }] = useAddProductMutation()
 
   const submit = (data) => {
     const product = {
@@ -20,9 +23,15 @@ const AddProduct = () => {
       spec: [],
     };
 
-    console.log(product);
+    addProduct(product)
     reset()
   };
+
+  useEffect(() => {
+    if (isLoading) toast.loading("Posting Product", { id: "add123" })
+    if (isSuccess) toast.success("Product Added Successfully", { id: "add123" })
+    if (isError) toast.error( error , { id: "add123" })
+  }, [isLoading, isSuccess, isError, error])
 
 
   return (

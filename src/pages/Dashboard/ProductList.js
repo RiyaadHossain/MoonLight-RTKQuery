@@ -1,15 +1,14 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React from "react";
+import { useGetProductsQuery } from "../../features/api/apiSlice";
 // import { toast } from "react-hot-toast";
 
 const ProductList = () => {
 
-  const [products, setProducts] = useState([])
+  const { isError, isFetching, data, error } = useGetProductsQuery(null, {refetchOnMountOrArgChange: true})
+  const products = data?.data
 
-  useEffect(() => {
-    fetch('products.json').then(res => res.json()).then(data => setProducts(data))
-  }, [])
-
+  if (isFetching) return <p>Loading...</p>
+  if (isError) return <p className="text-red-600">{error}</p>
 
   return (
     <div className='flex flex-col justify-center items-center h-full w-full '>

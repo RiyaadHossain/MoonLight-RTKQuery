@@ -8,7 +8,7 @@ const Home = () => {
 
   const dispatch = useDispatch()
   const { stock, brands } = useSelector(state => state.filter)
-  const { isFetching, isError, data, error } = useGetProductsQuery()
+  const { isFetching, isError, data, error } = useGetProductsQuery(null, {refetchOnMountOrArgChange: true})
   const products = data?.data
 
   const activeClass = "text-white  bg-indigo-500 border-white";
