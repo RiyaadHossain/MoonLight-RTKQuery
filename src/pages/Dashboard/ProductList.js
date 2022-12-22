@@ -1,13 +1,21 @@
-import React from "react";
-import { useGetProductsQuery } from "../../features/api/apiSlice";
-// import { toast } from "react-hot-toast";
+import React, { useEffect } from "react";
+import { useGetProductsQuery, useRemoveProductMutation } from "../../features/api/apiSlice";
+import { toast } from "react-hot-toast";
 
 const ProductList = () => {
 
-  const { isError, isFetching, data, error } = useGetProductsQuery(null, {refetchOnMountOrArgChange: true})
+  const { isError, data, error } = useGetProductsQuery(null, { refetchOnMountOrArgChange: true })
   const products = data?.data
 
-  if (isFetching) return <p>Loading...</p>
+  const [removeProduct, { isError: isRemoveError, isLoading, isSuccess, error: removeError }] = useRemoveProductMutation()
+
+  useEffect(() => {
+    if (isLoading) toast.loading("Deleting...", { id: "remove123" })
+    if (isSuccess) toast.success("Product is deleted successfully", { id: "remove123" })
+    if (isError) toast.error(error, { id: "remove123" })
+    if (isRemoveError) toast.error(removeError, { id: "remove123" })
+  }, [isLoading, isSuccess, isError, error, isRemoveError, removeError])
+
   if (isError) return <p className="text-red-600">{error}</p>
 
   return (
@@ -68,7 +76,7 @@ const ProductList = () => {
                   </td>
                   <td className='p-2'>
                     <div className='flex justify-center'>
-                      <button>
+                      <button onClick={() => removeProduct(_id)}>
                         <svg
                           className='w-8 h-8 hover:text-blue-600 rounded-full hover:bg-gray-100 p-1'
                           fill='none'
